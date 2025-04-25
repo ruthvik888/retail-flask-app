@@ -1,5 +1,4 @@
-flask
-azure-storage-blob
-pandas
-gunicorn
-
+Flask==2.1.0
+gunicorn==20.1.0
+azure-storage-blob==12.8.1
+pandas==1.4.2
