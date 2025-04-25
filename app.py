@@ -26,3 +26,29 @@ def search():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+from azure.storage.blob import BlobServiceClient
+import pandas as pd
+from io import BytesIO
+
+# Connect to Azure Blob Storage using your connection string
+blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=retailanalyticsstorage1;AccountKey=3mX/rYbcn3WVf1rhCIA281tdDPypuMgN3A7nRrbgDwcUo7DUShJZOh6ORuYGUwF6oYZfyopMwo5C+ASt8D628A==;EndpointSuffix=core.windows.net")
+container_name = "<project-data>"
+
+# Function to load CSV data from Blob Storage
+def load_data_from_blob(blob_name):
+    # Get the blob client for the specific file
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
+    download_stream = blob_client.download_blob()
+    data = download_stream.readall()
+    return pd.read_csv(BytesIO(data))
+
+# Load the households data (for Household #10 example)
+df_households = load_data_from_blob('400_households.csv')
+
+@app.route('/sample-data')
+def sample_data():
+    # Filter data for Household #10
+    sample = df_households[df_households['HSHD_NUM'] == 10]
+    return render_template('sample_data.html', data=sample)
+
