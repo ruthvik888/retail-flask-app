@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Household Data</title>
+</head>
+<body>
+    <h2>Household Data for HSHD_NUM 10</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>HSHD_NUM</th>
+                <th>Age Range</th>
+                <th>Income Range</th>
+                <th>Household Composition</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data.itertuples() %}
+            <tr>
+                <td>{{ row.HSHD_NUM }}</td>
+                <td>{{ row.AGE_RANGE }}</td>
+                <td>{{ row.INCOME_RANGE }}</td>
+                <td>{{ row.HSHD_COMPOSITION }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
