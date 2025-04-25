@@ -52,3 +52,7 @@ def sample_data():
     sample = df_households[df_households['HSHD_NUM'] == 10]
     return render_template('sample_data.html', data=sample)
 
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000, debug=True)
+
+
