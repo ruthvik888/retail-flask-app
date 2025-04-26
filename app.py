@@ -45,6 +45,11 @@ def load_data_from_blob(blob_name):
 
 # Load the households data (for Household #10 example)
 df_households = load_data_from_blob('400_households.csv')
+# strip whitespace off every column name
+df_households.columns = df_households.columns.str.strip()
+# make sure HSHD_NUM is numeric
+df_households['HSHD_NUM'] = pd.to_numeric(df_households['HSHD_NUM'], errors='coerce')
+
 
 @app.route('/sample-data')
 def sample_data():
