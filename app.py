@@ -33,7 +33,7 @@ from io import BytesIO
 
 # Connect to Azure Blob Storage using your connection string
 blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=retailanalyticsstorage1;AccountKey=3mX/rYbcn3WVf1rhCIA281tdDPypuMgN3A7nRrbgDwcUo7DUShJZOh6ORuYGUwF6oYZfyopMwo5C+ASt8D628A==;EndpointSuffix=core.windows.net")
-container_name = "<project-data>"
+container_name = "project-data"
 
 # Function to load CSV data from Blob Storage
 def load_data_from_blob(blob_name):
