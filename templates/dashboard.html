@@ -1,13 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Dashboard</title>
-</head>
-<body>
-  <h1>Welcome to the Dashboard</h1>
-  <p>Select “Sample Data” to see your household table.</p>
-  <a href="/sample-data">View sample data →</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <div class="text-center">
+    <h1>Welcome to the Dashboard</h1>
+    <p class="lead">Select an action below:</p>
+    <div class="d-grid gap-3 col-6 mx-auto">
+      <a href="{{ url_for('search') }}" class="btn btn-lg btn-outline-primary">Search by Household</a>
+      <a href="{{ url_for('sample_pull') }}" class="btn btn-lg btn-outline-secondary">View Sample Pull (#10)</a>
+    </div>
+  </div>
+{% endblock %}
