@@ -9,7 +9,7 @@ def login():
 
 @app.route('/dashboard')
 def dashboard():
-    return "<h2>Welcome to the Dashboard</h2>"
+    return render_template('dashboard.html')
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
