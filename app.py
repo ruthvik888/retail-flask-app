@@ -42,8 +42,14 @@ def load_data_from_blob(blob_name):
     download_stream = blob_client.download_blob()
     data = download_stream.readall()
     return pd.read_csv(BytesIO(data))
-    df.columns = df.columns.str.strip().str.upper()
+    df.columns = (
+        df.columns
+          .str.strip()
+          .str.upper()
+          .str.replace(r'\s+', '_', regex=True)
+    )
     return df
+
 
 df_households = load_data_from_blob('400_households.csv')
 df_tx         = load_data_from_blob('400_transactions.csv')
