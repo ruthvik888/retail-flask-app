@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Search Households{% endblock %}
+
+{% block content %}
+  <h2>Lookup a Household</h2>
+  <form method="post" action="{{ url_for('search') }}">
+    <div class="mb-3">
+      <label for="hshd_num" class="form-label">Household #</label>
+      <input
+        type="number"
+        class="form-control"
+        id="hshd_num"
+        name="hshd_num"
+        value="{{ prefill or '' }}"
+        required
+      >
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+{% endblock %}
