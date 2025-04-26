@@ -36,18 +36,20 @@ blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpoints
 container_name = "project-data"
 
 # Function to load CSV data from Blob Storage
-def load_data_from_blob(blob_name):
-    # Get the blob client for the specific file
-    blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
-    download_stream = blob_client.download_blob()
-    data = download_stream.readall()
-    return pd.read_csv(BytesIO(data))
-    df.columns = (
-        df.columns
-          .str.strip()
-          .str.upper()
-          .str.replace(r'\s+', '_', regex=True)
+def load_blob_csv(blob_name: str) -> pd.DataFrame:
+    """
+    Download the named CSV from Azure Blob Storage,
+    strip/uppercase all column names, and return a DataFrame.
+    """
+    blob_client = blob_service_client.get_blob_client(
+        container=container_name,
+        blob=blob_name
     )
+    raw = blob_client.download_blob().readall()
+    df = pd.read_csv(BytesIO(raw))
+
+    # normalize column names so keys like 'HSHD_NUM' always exist
+    df.columns = df.columns.str.strip().str.upper()
     return df
 
 
