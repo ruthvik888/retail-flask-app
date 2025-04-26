@@ -42,20 +42,58 @@ def load_data_from_blob(blob_name):
     download_stream = blob_client.download_blob()
     data = download_stream.readall()
     return pd.read_csv(BytesIO(data))
+    df.columns = df.columns.str.strip()
+    return df
 
 # Load the households data (for Household #10 example)
 df_households = load_data_from_blob('400_households.csv')
 # strip whitespace off every column name
-df_households.columns = df_households.columns.str.strip()
+#df_households.columns = df_households.columns.str.strip()
 # make sure HSHD_NUM is numeric
 df_households['HSHD_NUM'] = pd.to_numeric(df_households['HSHD_NUM'], errors='coerce')
 
+df_tx    = load_blob_csv("400_transactions.csv")
+df_prod  = load_blob_csv("400_products.csv")
 
-@app.route('/sample-data')
-def sample_data():
-    # Filter data for Household #10
-    sample = df_households[df_households['HSHD_NUM'] == 10]
-    return render_template('sample_data.html', data=sample)
+# Ensure numeric keys
+df_tx   ["HSHD_NUM"]    = pd.to_numeric(df_tx   ["HSHD_NUM"],    errors="coerce")
+df_tx   ["PRODUCT_NUM"] = pd.to_numeric(df_tx   ["PRODUCT_NUM"], errors="coerce")
+df_prod ["PRODUCT_NUM"] = pd.to_numeric(df_prod ["PRODUCT_NUM"], errors="coerce")
+
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    if request.method == "POST":
+        try:
+            h = int(request.form["hshd_num"])
+        except ValueError:
+            flash("Please enter a valid household number.", "danger")
+            return redirect(url_for("search"))
+
+        # join: Households → Transactions → Products
+        hh   = df_house[df_house["HSHD_NUM"] == h]
+        merged = pd.merge(hh, df_tx, on="HSHD_NUM", how="inner")
+        merged = pd.merge(merged, df_prod, on="PRODUCT_NUM", how="inner")
+        merged.sort_values(
+            ["HSHD_NUM","BASKET_NUM","DATE","PRODUCT_NUM","DEPARTMENT","COMMODITY"],
+            inplace=True
+        )
+        records = merged.to_dict(orient="records")
+
+        if not records:
+            flash(f"No data found for household #{h}.", "warning")
+        return render_template("search_results.html", hshd=h, rows=records)
+
+    return render_template("search.html")
+
+
+@app.route("/sample-pull")
+def sample_pull():
+    # shortcut: redirect form to /search with HSHD_NUM=10
+    return render_template("search.html", prefill=10)
+
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True)
